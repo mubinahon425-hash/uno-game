@@ -26,7 +26,7 @@ h1{text-align:center;color:#ffdf35;margin:0 0 8px;font-size:38px}
  text-align:center;border:2px solid #ffffff44;min-width:95px;
 }
 .avatar{font-size:27px}
-.count{font-size:13px;color:#ffdf35;margin-topCardData:4px}
+.count{font-size:13px;color:#ffdf35;margin-top:4px}
 .middle{
  display:flex;justify-content:center;align-items:center;
  gap:35px;min-height:230px;margin:10px 0;
@@ -60,7 +60,7 @@ button{
 .draw{background:#ffcf24;color:#222}
 .uno{background:#ed2636;color:white}
 .status{text-align:center;min-height:24px;color:#ffed72;font-weight:bold}
-.myarea{text-align:center;margin-topCardData:10px}
+.myarea{text-align:center;margin-top:10px}
 .mycards{
  display:flex;justify-content:center;align-items:center;
  flex-wrap:wrap;gap:7px;margin:14px auto;min-height:125px;
@@ -94,7 +94,7 @@ button{
   </div>
   <div>
    <div style="text-align:center;margin-bottom:8px">TASHLANGAN KARTA</div>
-   <div class="card tablecard blue" id="topCardDataCard">6</div>
+   <div class="card tablecard blue" id="topCard">6</div>
   </div>
  </div>
 
@@ -119,12 +119,12 @@ let hand=[
  {c:"red",v:"9"},{c:"green",v:"1"},
  {c:"blue",v:"7"}
 ];
-let topCardData={c:"blue",v:"6"};
+let top={c:"blue",v:"6"};
 let opponents={ali:7,vali:7,sardor:7};
 
 function render(){
- document.getElementById("topCardDataCard").className="card tablecard "+topCardData.c;
- document.getElementById("topCardDataCard").textContent=topCardData.v;
+ document.getElementById("topCard").className="card tablecard "+top.c;
+ document.getElementById("topCard").textContent=top.v;
  document.getElementById("myCards").innerHTML="";
  hand.forEach((card,i)=>{
   let el=document.createElement("div");
@@ -139,20 +139,44 @@ function render(){
 }
 function playCard(i){
  let card=hand[i];
+
  if(card.c!==topCardData.c && card.v!==topCardData.v){
   message("Bu kartni hozir tashlay olmaysiz!");
   return;
  }
+
  topCardData=card;
  hand.splice(i,1);
  render();
+
  if(hand.length===0){
-  message("🎉 TABRIKLAYMIZ! SIZ G‘OLIB BO‘LDINGIZ!");
- }else if(hand.length===1){
-  message("UNO! Oxirgi kartangiz qoldi!");
+  message("SIZ G‘OLIB BO‘LDINGIZ!");
  }else{
-  message("Karta tashlandi! Endi raqib navbati.");
+  message("Raqiblar navbati...");
+  setTimeout(opponentTurn,1200);
  }
+}
+
+function opponentTurn(){
+ let names=["ali","vali","sardor"];
+ let name=names[Math.floor(Math.random()*names.length)];
+
+ if(opponents[name] <= 0){
+  message(name.toUpperCase()+" kartasi qolmadi!");
+  return;
+ }
+
+ let values=["0","1","2","3","4","5","6","7","8","9"];
+ let card={
+  c:topCardData.c,
+  v:values[Math.floor(Math.random()*values.length)]
+ };
+
+ topCardData=card;
+ opponents[name]--;
+
+ render();
+ message(name.toUpperCase()+" karta tashladi! 🎴");
 }
 function drawCard(){
  let card={c:colors[Math.floor(Math.random()*4)],
